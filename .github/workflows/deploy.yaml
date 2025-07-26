@@ -43,4 +43,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update image tag to ${{ steps.vars.outputs.TAG }}"
-          file_pattern: "k8s/todo-deployment.yaml"
+          file_pattern: "k8s/todo.yaml"
