@@ -12,7 +12,7 @@ async function loadTodos() {
     li.textContent = todo.title;
 
     li.onclick = async () => {
-      await fetch(`${apiUrl}/${todo.id}`, {
+      await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...todo, completed: !todo.completed }),
@@ -24,7 +24,11 @@ async function loadTodos() {
     del.textContent = "X";
     del.onclick = async (e) => {
       e.stopPropagation();
-      await fetch(`${apiUrl}/${todo.id}`, { method: "DELETE" });
+      await fetch(apiUrl, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(todo),
+      });
       loadTodos();
     };
 
