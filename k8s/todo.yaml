@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: akhormi/todo-web:git-828724d
+          image: akhormi/todo-web:git-003093b
           ports:
             - containerPort: 8080
           resources:
@@ -117,7 +117,7 @@ spec:
     spec:
       containers:
         - name: todo-dbhandler
-          image: akhormi/todo-dbhandler:git-828724d
+          image: akhormi/todo-dbhandler:git-003093b
           resources:
             requests:
               cpu: 50m
