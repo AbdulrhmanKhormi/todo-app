@@ -29,6 +29,8 @@ spec:
               cpu: 500m
               memory: 256Mi
           env:
+            - name: NATS_URL
+              value: "nats://nats.nats.svc.cluster.local:4222"
             - name: DB_HOST
               value: "postgres-postgresql.postgres.svc.cluster.local"
             - name: DB_PORT
