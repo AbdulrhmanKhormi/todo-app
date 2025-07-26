@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: akhormi/todo:git-52390e4
+          image: akhormi/todo:git-828724d
           ports:
             - containerPort: 8080
           resources:
