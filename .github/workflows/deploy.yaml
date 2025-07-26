@@ -39,8 +39,12 @@ jobs:
         run: |
           sed -i "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${{ steps.vars.outputs.TAG }}|g" k8s/todo.yaml
 
-      - name: Commit and push updated manifest
+      - name: Auto-commit updated k8s files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update image tag to ${{ steps.vars.outputs.TAG }}"
-          file_pattern: "k8s/todo.yaml"
+          repository: .
+          commit_message: Update image tag to git-${{ github.sha }}
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          file_pattern: k8s/todo.yaml
+          push_options: "--repo=https://x-access-token:${{ secrets.GH_PAT }}@github.com/AbdulrhmanKhormi/todo-app.git"
