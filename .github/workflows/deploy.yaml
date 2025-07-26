@@ -5,7 +5,8 @@ on:
     branches: [main]
 
 env:
-  IMAGE_NAME: akhormi/todo
+  WEB_IMAGE: akhormi/todo-web
+  DB_IMAGE: akhormi/todo-dbhandler
 
 jobs:
   build-and-deploy:
@@ -28,22 +29,26 @@ jobs:
         id: vars
         run: echo "TAG=git-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.TAG }}
-
-      - name: Update Kubernetes manifest with new image tag
+      - name: Build and push todo-web
         run: |
-          sed -i "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${{ steps.vars.outputs.TAG }}|g" k8s/todo.yaml
+          docker build -f Dockerfile.web -t $WEB_IMAGE:${{ steps.vars.outputs.TAG }} .
+          docker push $WEB_IMAGE:${{ steps.vars.outputs.TAG }}
+
+      - name: Build and push todo-dbhandler
+        run: |
+          docker build -f Dockerfile.db -t $DB_IMAGE:${{ steps.vars.outputs.TAG }} .
+          docker push $DB_IMAGE:${{ steps.vars.outputs.TAG }}
+
+      - name: Update image tags in todo.yaml
+        run: |
+          sed -i "s|akhormi/todo-web:.*|$WEB_IMAGE:${{ steps.vars.outputs.TAG }}|g" k8s/todo.yaml
+          sed -i "s|akhormi/todo-dbhandler:.*|$DB_IMAGE:${{ steps.vars.outputs.TAG }}|g" k8s/todo.yaml
 
       - name: Auto-commit updated k8s files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           repository: .
-          commit_message: Update image tag to git-${{ github.sha }}
+          commit_message: Update image tags to ${{ steps.vars.outputs.TAG }}
           commit_user_name: github-actions[bot]
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
           file_pattern: k8s/todo.yaml
